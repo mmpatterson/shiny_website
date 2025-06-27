@@ -1,0 +1,6 @@
+/* www/styles.css */
+
+#fadeContainer {
+  transition: opacity 2.5s ease-in-out;
+  opacity: 1;
+}
