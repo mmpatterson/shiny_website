@@ -1,6 +1,200 @@
 /* www/styles.css */
 
+:root {
+  --primary: #00274D;      /* Navy: for buttons, links, headers */
+  --secondary: #4C6A92;    /*  Desaturated blue-gray */
+  --accent: #C3CEDA;       /*  Soft steel blue (highlight areas, subtle UI) */
+  --background: #FAFAF7;   /*  Soft cream background */
+  --surface: #FFFFFF;      /*  Cards and content blocks */
+  --text: #2E2E2E;         /*  Elegant, dark gray for readability */
+  --muted: #7A7A7A;        /*  Muted text (captions, secondary UI) */
+  --link: #4C6A92;
+  --link-hover: #00274D;
+  --code-background: #F3F3F3;
+  --code-text: #00274D;
+}
+
+/* ---- Global styles ---- */
+
+body {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  background-color: var(--background);
+  color: var(--text);
+  margin: 0 auto;
+  /*max-width: 900px;*/
+  padding: 2rem 1.5rem;
+}
+
+/* ---- Headings ---- */
+
+h1, h2, h3, h4 {
+  font-family: "Lora", serif;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+/* ---- Links ---- */
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* ---- Paragraphs and Lists ---- */
+
+p {
+  margin-bottom: 1.2rem;
+}
+
+ul, ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* ---- Code blocks ---- */
+
+pre, code {
+  font-family: "Fira Code", monospace;
+  background-color: var(--code-background);
+  color: var(--code-text);
+  border-radius: 5px;
+  padding: 0.25em 0.5em;
+  font-size: 0.95rem;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+/* ---- Images ---- */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 2rem auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+#shiny-plot-output {
+  width: 60vw;
+  height: 60vh;
+}
+
+/* ---- Sections ---- */
+
+section {
+  margin-bottom: 3rem;
+}
+
+/* ---- Resume & Project Blocks ---- */
+
+.resume-block, .project-block {
+  background-color: var(--surface);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.resume-block h3, .project-block h3 {
+  margin-top: 0;
+}
+
+/* ---- Muted text ---- */
+
+.muted {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+
 #fadeContainer {
-  transition: opacity 2.5s ease-in-out;
-  opacity: 1;
+        opacity: 1;
+        transition: opacity 0.5s ease-in;
+      }
+      
+.scrollytell-container {
+        display: flex;
+        flex-direction: row;
+        height: 100vh;
+        background-color: var(--primary); 
+        margin-bottom: 0;
+        margin-left: 0;
+        margin-top: 0;
+        padding: 0;
+  
+}
+
+.scrollytell-steps {
+        width: 20vw;
+        overflow-y: auto;
+        padding-right: 1rem;
+        border-right: 1px solid #eee;
+      }
+
+.scrollytell-graph {
+        width: 65vw;
+        height: 65vh;
+        padding-left: 1rem;
+        position: sticky;
+        top: 30px;
+        align-self: start;
+      }
+
+#scrolly-section {
+    height: 150vh; 
+    width: 20vw;
+    padding: 1rem;
+    border-bottom: 1px solid var(--text);
+    background-color: var(--code-text);
+    color: var(--code-background);
+    
+      }
+
+      .scrolly-section.is-active {
+        border-left: 4px solid;
+        background-color: var(--secondary);
+        color: inherit;
+      }
+
+
+
+  .scrolly-section.is-active {
+  }
+  
+.navbar {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none; /* if there's an unwanted border */
+  background-color: var(--primary);
+  color: var(--code-background);
 }
