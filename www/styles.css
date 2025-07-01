@@ -16,6 +16,20 @@
 
 /* ---- Global styles ---- */
 
+.parent {
+  width: 400px;
+  height: 200px;
+  border: 0px solid #AAA;
+  overflow: hidden;
+}
+
+.child {
+  height: 100%;
+  margin-right: -50px; /* Maximum width of scrollbar */
+  padding-right: 50px; /* Maximum width of scrollbar */
+  overflow-y: hidden;
+}
+
 body {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 1.05rem;
@@ -24,7 +38,7 @@ body {
   color: var(--text);
   margin: 0 auto;
   /*max-width: 900px;*/
-  padding: 2rem 1.5rem;
+  padding: 0rem 0em;
 }
 
 /* ---- Headings ---- */
@@ -84,12 +98,12 @@ pre, code {
   background-color: var(--code-background);
   color: var(--code-text);
   border-radius: 5px;
-  padding: 0.25em 0.5em;
+  padding: 0.0em 0.0em;
   font-size: 0.95rem;
 }
 
 pre {
-  padding: 1rem;
+  padding: 0rem;
   overflow-x: auto;
 }
 
@@ -146,6 +160,7 @@ section {
         display: flex;
         flex-direction: row;
         height: 100vh;
+        width: 20vw;
         background-color: var(--primary); 
         margin-bottom: 0;
         margin-left: 0;
@@ -157,44 +172,90 @@ section {
 .scrollytell-steps {
         width: 20vw;
         overflow-y: auto;
-        padding-right: 1rem;
+        padding-right: 0rem;
         border-right: 1px solid #eee;
       }
 
 .scrollytell-graph {
         width: 65vw;
         height: 65vh;
-        padding-left: 1rem;
+        padding-left: 2%;
         position: sticky;
         top: 30px;
         align-self: start;
       }
+      
+/* Hide all scrolly sections unless they're active */
+.scrolly-section {
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  transition: opacity 0.4s ease, height 0.4s ease;
+  margin-top: 50vh;  /* pushes the first section ~halfway down the page */
+  font-size: 2.5rem;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* Show active scrolly section */
+.scrolly-section.graph-scroll-active {
+  opacity: 1;
+  height: auto;
+  overflow: visible;
+  border-left: 3px solid;
+  background-color: inherit;
+  color: var(--code-background);
+  padding-left: 0.5rem;
+  
+  
+}
 
 #scrolly-section {
-    height: 150vh; 
-    width: 20vw;
+    height: 200%; 
     padding: 1rem;
     border-bottom: 1px solid var(--text);
     background-color: var(--code-text);
     color: var(--code-background);
     
+    
+    
       }
 
-      .scrolly-section.is-active {
-        border-left: 4px solid;
-        background-color: var(--secondary);
-        color: inherit;
+.scrolly-sections {
+    height: 200%; 
+    width: 30%;
+    scroll-snap-type: y mandatory;
+
       }
 
 
-
-  .scrolly-section.is-active {
-  }
-  
 .navbar {
   margin-bottom: 0;
   padding-bottom: 0;
   border-bottom: none; /* if there's an unwanted border */
   background-color: var(--primary);
   color: var(--code-background);
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-top: 0;
+  padding: 0;
 }
+
+.container-fluid.html-fill-item.html-fill-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  height:0 !important;
+  
+}
+
+
+
+.container-fluid,
+.html-fill-item,
+.html-fill-container,
+.main-panel,
+.mainPanel {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+

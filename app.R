@@ -59,59 +59,59 @@ ui <- fluidPage(
     "))
   ),
   # Create a top bar with dropdowns
-  page_navbar(
-    title = "Maxwell Patterson",
-    tabPanel("",icon = icon("home", lib = "glyphicon")
-    ),
-    tabPanel(title = tags$div(
-      onclick = "https://www.linkedin.com/in/maxwell-patterson/",
-      target = "_blank",
-      bsicons::bs_icon("linkedin", size = "2.5rem"),   # Adding a Bootstrap icon
-      # "External Link"
-    ),
-    value = "external_link"
-    ),
-    tabPanel(title = tags$div(
-      onclick = "https://github.com/mmpatterson",
-      target = "_blank",
-      bsicons::bs_icon("github", size = "2.5rem"),   # Adding a Bootstrap icon
-    ),
-    value = "external_link"
-    ),
-
-    # Dropdown for Resume
-    tabPanel("Resume",
-             div(
-               style = "text-align: center;",  # Center the content
-               tags$iframe(
-                 src = "data/maxwell_patterson.pdf",
-                 width = "80%",              # Set width to 80%
-                 height = "1000px",           # Set a fixed height
-                 frameborder = "0"
-               )
-             )
-    ),
-
-    # Dropdown for Projects
-    navbarMenu("Projects",
-               tabPanel("Deep Learning",
-                        h3("Wikiracer Object Detection"),
-                        p("This project was completed during my master's program. Our goal was to utilize an open source driving game, SuperTuxKart, to train a team of karts to detect a puck and score goals on the opposing team."),
-                        div(
-                          style = "text-align: center;",  # Center the content
-                          tags$iframe(
-                            src = "./data/object_detection_project.pdf",  # URL to your PDF using the resource path
-                            width = "80%",              # Set width to 80%
-                            height = "1000px",           # Set a fixed height
-                            frameborder = "0"
-                          )
-               )
-               ),
-               tabPanel(a(href = "https://mmpatterson.github.io/leaflet-earthquake-tracker/earthquake-tracker/", "Earthquake Tracker", target = "_blank")#,
-               )
-               # Add more projects as needed
-    )
-  ),
+  # page_navbar(
+  #   title = "Maxwell Patterson",
+  #   tabPanel("",icon = icon("home", lib = "glyphicon")
+  #   ),
+  #   tabPanel(title = tags$div(
+  #     onclick = "https://www.linkedin.com/in/maxwell-patterson/",
+  #     target = "_blank",
+  #     bsicons::bs_icon("linkedin", size = "2.5rem"),   # Adding a Bootstrap icon
+  #     # "External Link"
+  #   ),
+  #   value = "external_link"
+  #   ),
+  #   tabPanel(title = tags$div(
+  #     onclick = "https://github.com/mmpatterson",
+  #     target = "_blank",
+  #     bsicons::bs_icon("github", size = "2.5rem"),   # Adding a Bootstrap icon
+  #   ),
+  #   value = "external_link"
+  #   ),
+  # 
+  #   # Dropdown for Resume
+  #   tabPanel("Resume",
+  #            div(
+  #              style = "text-align: center;",  # Center the content
+  #              tags$iframe(
+  #                src = "data/maxwell_patterson.pdf",
+  #                width = "80%",              # Set width to 80%
+  #                height = "1000px",           # Set a fixed height
+  #                frameborder = "0"
+  #              )
+  #            )
+  #   ),
+  # 
+  #   # Dropdown for Projects
+  #   navbarMenu("Projects",
+  #              tabPanel("Deep Learning",
+  #                       h3("Wikiracer Object Detection"),
+  #                       p("This project was completed during my master's program. Our goal was to utilize an open source driving game, SuperTuxKart, to train a team of karts to detect a puck and score goals on the opposing team."),
+  #                       div(
+  #                         style = "text-align: center;",  # Center the content
+  #                         tags$iframe(
+  #                           src = "./data/object_detection_project.pdf",  # URL to your PDF using the resource path
+  #                           width = "80%",              # Set width to 80%
+  #                           height = "1000px",           # Set a fixed height
+  #                           frameborder = "0"
+  #                         )
+  #              )
+  #              ),
+  #              tabPanel(a(href = "https://mmpatterson.github.io/leaflet-earthquake-tracker/earthquake-tracker/", "Earthquake Tracker", target = "_blank")#,
+  #              )
+  #              # Add more projects as needed
+  #   )
+  # ),
 
   scrolly_container("scr",
                     scrolly_graph(
