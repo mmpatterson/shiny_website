@@ -24,6 +24,9 @@ library(DT)
 library(ggplot2)
 library(ggimage)
 library(glue)
+library(thematic)
+
+thematic::thematic_shiny()
 
 # Define UI for the application
 ui <- fluidPage(
@@ -32,6 +35,34 @@ ui <- fluidPage(
   # shinythemes::themeSelector(),
   tags$head(
     includeCSS("./www/styles.css")
+  ),
+  tags$head(
+    tags$script(HTML("
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('scrolly-section-holder');
+      const sections = container.querySelectorAll('.scrolly-section');
+      let current = 0;
+      let isScrolling = false;
+
+      function scrollToSection(index) {
+        if (index < 0 || index >= sections.length) return;
+        isScrolling = true;
+        sections[index].scrollIntoView({ behavior: 'smooth' });
+        current = index;
+        setTimeout(() => { isScrolling = false; }, 700); // delay to prevent rapid scrolling
+      }
+
+      container.addEventListener('wheel', function (e) {
+        if (isScrolling) return;
+        if (e.deltaY > 0) {
+          scrollToSection(current + 1); // scroll down
+        } else {
+          scrollToSection(current - 1); // scroll up
+        }
+        e.preventDefault(); // stop default scrolling
+      }, { passive: false });
+    });
+  "))
   ),
   tags$head(
     # tags$style(HTML("
@@ -118,7 +149,7 @@ ui <- fluidPage(
                       div(id = "fadeContainer", uiOutput("dynamicOutput"))
                     ),
                     
-                    scrolly_sections(id = "scrolly-section",
+                    scrolly_sections(id = "scrolly-section-holder",
                                      
                       scrolly_section(id = "intro",
                                       
@@ -143,7 +174,8 @@ ui <- fluidPage(
                                       glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" )
                       )
                   )
-  )
+  ),
+  theme = bs_theme(brand = TRUE)
 )
 
 
@@ -182,7 +214,10 @@ server <- function(input, output, session) {
       passing_yards_after_catch = "Passing Yards After Catch",
       team_wordmark = "",
       team_logo_espn = ""
-    ) 
+    ) %>%
+    tab_options(
+      table.background.color = "#FAFAF7"
+    )
   
   med_before_catch <- median(pbp$passing_yards_before_catch)
   med_after_catch <- median(pbp$passing_yards_after_catch)
@@ -197,8 +232,9 @@ server <- function(input, output, session) {
       title = "Passing Yards Before/After Catch"
     ) +
     xlab("Passing Yards Before Catch") +
-    ylab("Passing Yards After Catch")
-  )
+    ylab("Passing Yards After Catch") +
+    theme_minimal()
+  ) 
   
   timer <- reactiveTimer(3000)
   options <- c("pbp_data", "team_table", "team_plot")

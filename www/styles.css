@@ -1,18 +1,6 @@
 /* www/styles.css */
 
-:root {
-  --primary: #00274D;      /* Navy: for buttons, links, headers */
-  --secondary: #4C6A92;    /*  Desaturated blue-gray */
-  --accent: #C3CEDA;       /*  Soft steel blue (highlight areas, subtle UI) */
-  --background: #FAFAF7;   /*  Soft cream background */
-  --surface: #FFFFFF;      /*  Cards and content blocks */
-  --text: #2E2E2E;         /*  Elegant, dark gray for readability */
-  --muted: #7A7A7A;        /*  Muted text (captions, secondary UI) */
-  --link: #4C6A92;
-  --link-hover: #00274D;
-  --code-background: #F3F3F3;
-  --code-text: #00274D;
-}
+
 
 /* ---- Global styles ---- */
 
@@ -34,8 +22,8 @@ body {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 1.05rem;
   line-height: 1.6;
-  background-color: var(--background);
-  color: var(--text);
+  background-color: var(--brand-cream);
+  color: var(--brand-code-text);
   margin: 0 auto;
   /*max-width: 900px;*/
   padding: 0rem 0em;
@@ -45,7 +33,7 @@ body {
 
 h1, h2, h3, h4 {
   font-family: "Lora", serif;
-  color: var(--primary);
+  /*color: var(--brand-primary); */
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -66,13 +54,13 @@ h3 {
 /* ---- Links ---- */
 
 a {
-  color: var(--link);
+  /*color: var(--brand-link); */
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: var(--link-hover);
+  /*color: var(--brand-link-hover); */
   text-decoration: underline;
 }
 
@@ -95,8 +83,8 @@ li {
 
 pre, code {
   font-family: "Fira Code", monospace;
-  background-color: var(--code-background);
-  color: var(--code-text);
+  background-color: var(--brand-code-background);
+  /*color: var(--brand-code-text); */
   border-radius: 5px;
   padding: 0.0em 0.0em;
   font-size: 0.95rem;
@@ -132,7 +120,7 @@ section {
 /* ---- Resume & Project Blocks ---- */
 
 .resume-block, .project-block {
-  background-color: var(--surface);
+  background-color: var(--brand-cream);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -146,7 +134,7 @@ section {
 /* ---- Muted text ---- */
 
 .muted {
-  color: var(--muted);
+  color: var(--brand-bluegray);
   font-size: 0.95rem;
 }
 
@@ -156,100 +144,88 @@ section {
         transition: opacity 0.5s ease-in;
       }
       
+/* === Layout container: horizontal split === */
 .scrollytell-container {
-        display: flex;
-        flex-direction: row;
-        height: 100vh;
-        width: 20vw;
-        background-color: var(--primary); 
-        margin-bottom: 0;
-        margin-left: 0;
-        margin-top: 0;
-        padding: 0;
-  
-}
-
-.scrollytell-steps {
-        width: 20vw;
-        overflow-y: auto;
-        padding-right: 0rem;
-        border-right: 1px solid #eee;
-      }
-
-.scrollytell-graph {
-        width: 65vw;
-        height: 65vh;
-        padding-left: 2%;
-        position: sticky;
-        top: 30px;
-        align-self: start;
-      }
-      
-/* Hide all scrolly sections unless they're active */
-.scrolly-section {
-  opacity: 0;
-  height: 0px;
-  overflow: hidden;
-  transition: opacity 0.4s ease, height 0.4s ease;
-  margin-top: 50vh;  /* pushes the first section ~halfway down the page */
-  font-size: 2.5rem;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-}
-
-/* Show active scrolly section */
-.scrolly-section.graph-scroll-active {
-  opacity: 1;
-  height: auto;
-  overflow: visible;
-  border-left: 3px solid;
-  background-color: inherit;
-  color: var(--code-background);
-  padding-left: 0.5rem;
-  
-  
-}
-
-#scrolly-section {
-    height: 200%; 
-    padding: 1rem;
-    border-bottom: 1px solid var(--text);
-    background-color: var(--code-text);
-    color: var(--code-background);
-    
-    
-    
-      }
-
-.scrolly-sections {
-    height: 200%; 
-    width: 30%;
-    scroll-snap-type: y mandatory;
-
-      }
-
-
-.navbar {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none; /* if there's an unwanted border */
-  background-color: var(--primary);
-  color: var(--code-background);
-  margin-bottom: 0;
-  margin-left: 0;
-  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 40vw;
+  margin: 0;
   padding: 0;
+  background-color: var(--brand-navy); /* from _brand.yml */
+  color: var(--brand-code-background);
 }
 
-.container-fluid.html-fill-item.html-fill-container {
-  margin: 0 !important;
-  padding: 0 !important;
-  height:0 !important;
-  
+/* === Text panel (scrollable sections) === */
+.scrollytell-steps {
+  width: 30vw; /* Adjusted from 20vw to match .scrolly-sections */
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  padding-right: 1rem;
+  border-right: 1px solid var(--brand-tertiary);
+  background-color: var(--brand-navy);   
+  color: var(--brand-code-background);
+}
+
+/* === Graph panel (remains visible) === */
+.scrollytell-graph {
+  width: 70vw;
+  height: 100vh;
+  padding-left: 2%;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  /*background-color: var(--brand-surface); */
+}
+
+/* === Section container === */
+#scrolly-section-holder {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  /*background-color: var(--brand-primary); */
+}
+
+/* === Individual scrolly section === */
+.scrolly-section {
+  scroll-snap-align: start;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem;
+  /*box-sizing: border-box; */
+  font-size: 1.75rem;
+  color: var(--brand-code-background);
+  background-color: var(--brand-navy);
+  border-left: 3px solid;
+  padding: 1rem;
+  border-bottom: 1px solid var(--brand-code-background);
+  border-radius: 5px;
+  transition: border-color 0.3s, background-color 0.3s;
 }
 
 
+/* === Active section highlight === */
+.scrolly-section.graph-scroll-active {
+  /*background-color: var(--brand-background); */
+}
 
+/* === Scrolly section wrapper === */
+.scrolly-sections {
+  width: 100%;
+}
+
+/* === Navbar styling === */
+.navbar {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+  background-color: var(--brand-navy);
+  color: var(--brand-code-background);
+}
+
+/* === Remove Shiny container padding === */
 .container-fluid,
 .html-fill-item,
 .html-fill-container,
@@ -259,3 +235,7 @@ section {
   padding: 0 !important;
 }
 
+/* === Optional: Smooth scroll behavior for snapping === */
+html {
+  scroll-behavior: smooth;
+}
