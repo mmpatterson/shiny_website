@@ -28,6 +28,22 @@ library(thematic)
 
 thematic::thematic_shiny()
 
+# Move outside of app so action happens immediately
+# Perform NFL Data Calculations
+pbp <- calculate_stats(
+  seasons = nflreadr::most_recent_season(),
+  summary_level = c("season"),
+  stat_type = c("team"),
+  season_type = c("REG")
+) %>%
+  select(team, passing_yards, passing_yards_after_catch) %>%
+  mutate(passing_yards_before_catch = passing_yards - passing_yards_after_catch) %>%
+  inner_join(
+    teams_colors_logos %>%
+      select(team_abbr, team_wordmark, team_logo_espn),
+    by = c('team' = 'team_abbr')
+  )
+
 # Define UI for the application
 ui <- fluidPage(
     
@@ -156,24 +172,27 @@ ui <- fluidPage(
                                       p("Hello! My name is Max Patterson, and I am a data scientist in the Greater Boston area")
                       ),
                       scrolly_section(id = "data",
-                                      "I have a passion for data and crafting insightful stories with it"
+                                      p("I have a passion for data and crafting insightful stories with it")
                       ),
                       scrolly_section(id = "locations",
-                                      "I've been able to call 5 different cities my home"
+                                      p("I've been able to call 5 different cities my home")
                       ),
                       scrolly_section(id = "bills",
-                                      "I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills fan. I also like the Buffalo Sabres, but it's hard rooting for such a downtrodden team"
+                                      p("I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills fan. I also like the Buffalo Sabres, but it's hard rooting for such a downtrodden team")
                       ),
                       scrolly_section(id = "education",
-                                      "I attended Dickinson College in Carlisle, PA, where I earned my bachelor's in physics and mathematics and participated on the cross country and track & field teams. I also have a master's in data science from the University of Texas at Austin"
+                                      p("I attended Dickinson College in Carlisle, PA, where I earned my bachelor's in physics and mathematics and participated on the cross country and track & field teams. I also have a master's in data science from the University of Texas at Austin")
                       ),
                       scrolly_section(id = "career-high-level",
-                                      "I started out of undergrad as an IT consultant, and I kept getting drawn to the technical portions of my work. I decided to do a data science bootcamp, and I realized that a career in data science was what I was looking for."
+                                      p("I started out of undergrad as an IT consultant, and I kept getting drawn to the technical portions of my work. I decided to do a data science bootcamp, and I realized that a career in data science was what I was looking for.")
                       ),
                       scrolly_section(id = "data-science-specifics",
-                                      glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" )
+                                      p(glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" ))
+                      ),
+                      scrolly_section(id = "final-scrolly",
+                                      p("Feel free to look at some of my projects and work history to get a better sense of my background")
                       )
-                  )
+                )
   ),
   theme = bs_theme(brand = TRUE)
 )
@@ -184,20 +203,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   addResourcePath("data", "./data")
   
-  # Perform NFL Data Calculations
-  pbp <- calculate_stats(
-    seasons = nflreadr::most_recent_season(),
-    summary_level = c("season"),
-    stat_type = c("team"),
-    season_type = c("REG")
-  ) %>%
-    select(team, passing_yards, passing_yards_after_catch) %>%
-    mutate(passing_yards_before_catch = passing_yards - passing_yards_after_catch) %>%
-    inner_join(
-      teams_colors_logos %>%
-        select(team_abbr, team_wordmark, team_logo_espn),
-      by = c('team' = 'team_abbr')
-    )
+  
   
   pbp_data <- renderDT(as.data.frame(pbp %>% head(10)))
   
@@ -272,6 +278,84 @@ server <- function(input, output, session) {
 
     else if (input$scr == "bills"){
       imageOutput("bills")
+    }
+    else if (input$scr == "final-scrolly" | input$scr == "intro"){
+      div(class = "full-page-center",
+          div(class = "icon-grid",
+              style = "display: flex;
+                      flex-direction: row;
+                      justify-content: center;
+                      align-items: center;
+                      gap: 40px;
+                      margin-top: 40px;",
+          # LinkedIn icon
+          tags$a(
+            href = "https://www.linkedin.com/in/maxwell-patterson/",
+            target = "_blank",
+            class = "icon-bounce linkedin-icon",
+            bs_icon("linkedin")
+          ),
+          # GitHub icon
+          tags$a(
+            href = "https://github.com/mmpatterson",
+            target = "_blank",
+            class = "icon-bounce github-icon",
+            bs_icon("github")
+          ),
+          # Resume icon
+          tags$div(
+            style = "text-align: center;",
+            class = "icon-bounce",
+            tags$a(
+              href = "data/maxwell_patterson.pdf",
+              download = NA, 
+              class = "icon-bounce resume-icon",
+              bs_icon("file-earmark-person"),
+              title = "Resume"
+            ),
+            tags$div("Resume", style = "margin-top: 5px; font-size: 0.3em;")
+          ),
+          # Fancy dropdown
+          tags$div(
+            class = "custom-dropdown",
+            style = "position: relative; display: inline-block; font-size: 1.2rem;",
+            tags$button(
+              class = "dropdown-button",
+              "Projects ▾"
+            ),
+            tags$div(
+              class = "dropdown-content",
+              style = "
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 200px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        ",
+              tags$a(href = "https://your-app1.shinyapps.io", target = "_blank", "📈 Forecasting App"),
+              tags$a(href = "https://your-app2.shinyapps.io", target = "_blank", "🧠 NLP Classifier"),
+              tags$a(href = "https://your-app3.shinyapps.io", target = "_blank", "📊 Dashboard")
+            )
+          ),
+          
+          tags$script(HTML("
+      document.querySelectorAll('.custom-dropdown').forEach(function(dropdown) {
+        var button = dropdown.querySelector('.dropdown-button');
+        var content = dropdown.querySelector('.dropdown-content');
+        button.addEventListener('click', function() {
+          content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        });
+        window.addEventListener('click', function(e) {
+          if (!dropdown.contains(e.target)) {
+            content.style.display = 'none';
+          }
+        });
+      });
+    "))
+      )
+          )
+      
     }
     else{
       
