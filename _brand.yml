@@ -2,7 +2,7 @@
 color:
   palette:
     cream: "#FAFAF7"
-    navy: "#00274D" # Navy: for buttons, links, headers
+    navy: "#00295B" # Navy: for buttons, links, headers
     bluegray: "#4C6A92"     # Desaturated blue-gray
     steelblue: "#C3CEDA"        # Soft steel blue (highlight areas, subtle UI)
     code-text: "#00274D" # Navy

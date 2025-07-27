@@ -4,6 +4,24 @@
 
 /* ---- Global styles ---- */
 
+.sidebar {
+  background-color: var(--brand-navy);
+  color: var(--brand-cream);
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.sidebar .shiny-input-container label {
+  color: var(--brand-cream);
+}
+.main {
+  padding: 30px;
+}
+      
 .parent {
   width: 400px;
   height: 200px;
@@ -61,39 +79,28 @@ a {
 
 a:hover {
   /*color: var(--brand-link-hover); */
-  text-decoration: underline;
+  /*text-decoration: underline;*/
 }
 
-/* ---- Paragraphs and Lists ---- */
+.nav-link {
+        display: block;
+        color: white;
+        padding: 10px 0;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 18px;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.3s ease;
+      }
+.nav-link:hover {
+        border-color: var(--brand-cream);
+      }
+.nav-link.active {
+        border-color: var(--brand-cream);
+        font-weight: bold;
+        border-bottom: 2px solid;
+      }
 
-p {
-  margin-bottom: 1.2rem;
-}
-
-ul, ol {
-  margin-left: 1.5rem;
-  margin-bottom: 1.2rem;
-}
-
-li {
-  margin-bottom: 0.5rem;
-}
-
-/* ---- Code blocks ---- */
-
-pre, code {
-  font-family: "Fira Code", monospace;
-  background-color: var(--brand-code-background);
-  /*color: var(--brand-code-text); */
-  border-radius: 5px;
-  padding: 0.0em 0.0em;
-  font-size: 0.95rem;
-}
-
-pre {
-  padding: 0rem;
-  overflow-x: auto;
-}
 
 /* ---- Images ---- */
 
@@ -117,136 +124,18 @@ section {
   margin-bottom: 3rem;
 }
 
-/* ---- Resume & Project Blocks ---- */
+/* ---- Rendered Conent on Main Page ---- */
 
-.resume-block, .project-block {
-  background-color: var(--brand-cream);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  margin-bottom: 2rem;
+.fade-container {
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
 }
 
-.resume-block h3, .project-block h3 {
-  margin-top: 0;
-}
-
-/* ---- Muted text ---- */
-
-.muted {
-  color: var(--brand-bluegray);
-  font-size: 0.95rem;
+.fade-container.hidden {
+  opacity: 0;
 }
 
 
-#fadeContainer {
-        opacity: 1;
-        transition: opacity 0.5s ease-in;
-      }
-      
-/* === Layout container: horizontal split === */
-.scrollytell-container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  width: 40vw;
-  margin: 0;
-  padding: 0;
-  background-color: var(--brand-navy); /* from _brand.yml */
-  color: var(--brand-code-background);
-}
-
-/* === Text panel (scrollable sections) === */
-.scrollytell-steps {
-  width: 30vw; /* Adjusted from 20vw to match .scrolly-sections */
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-snap-stop: always;
-  padding-right: 1rem;
-  border-right: 1px solid var(--brand-tertiary);
-  background-color: var(--brand-navy);   
-  color: var(--brand-code-background);
-}
-
-/* === Graph panel (remains visible) === */
-.scrollytell-graph {
-  width: 70vw;
-  height: 100vh;
-  padding-left: 2%;
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  /*background-color: var(--brand-surface); */
-}
-
-/* === Section container === */
-#scrolly-section-holder {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background-color: var(--brand-navy); 
-  scroll-snap-type: y mandatory;
-  scroll-snap-stop: always;
-}
-
-/* === Individual scrolly section === */
-.scrolly-section {
-  scroll-snap-align: start;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 2rem;
-  /*box-sizing: border-box; */
-  font-size: 1.75rem;
-  color: var(--brand-code-background);
-  background-color: var(--brand-navy);
-  padding: 1rem;
-  border-radius: 5px;
-  transition: border-color 0.3s, background-color 0.3s;
-  scroll-snap-type: y mandatory;
-  scroll-snap-stop: always;
-}
-
-.scrolly-section p {
-  border-left: 3px solid;
-  padding: 1rem;
-  border-radius: 5px;
-}
-
-/* === Active section highlight === */
-.scrolly-section.graph-scroll-active {
-  /*background-color: var(--brand-background); */
-}
-
-/* === Scrolly section wrapper === */
-.scrolly-sections {
-  width: 100%;
-}
-
-/* === Navbar styling === */
-.navbar {
-  margin: 0;
-  padding: 0;
-  border-bottom: none;
-  background-color: var(--brand-navy);
-  color: var(--brand-code-background);
-}
-
-/* === Remove Shiny container padding === */
-.container-fluid,
-.html-fill-item,
-.html-fill-container,
-.main-panel,
-.mainPanel {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* === Optional: Smooth scroll behavior for snapping === */
-html {
-  scroll-behavior: smooth;
-}
 
 /* Icon grid on homepage */
 html, body, .container-fluid {
@@ -271,7 +160,7 @@ html, body, .container-fluid {
       } */
 
       .icon-bounce {
-        font-size: 64px;
+        font-size: 32px;
         animation: bounceIn 0.8s ease;
         transition: transform 0.3s;
       }
@@ -281,11 +170,20 @@ html, body, .container-fluid {
       }
 
       .linkedin-icon {
-        color: #0A66C2;
+        /* color: #0A66C2; */
+        color: var(--brand-cream);
+        margin: 0 8px;
       }
 
       .github-icon {
-        color: #24292E;
+        /* color: #24292E; */
+        color: var(--brand-cream);
+        margin: 0 8px;
+      }
+      
+      .email-icon{
+        color: var(--brand-cream);
+        margin: 0 8px;
       }
       
       .resume-icon {
@@ -308,3 +206,10 @@ html, body, .container-fluid {
           transform: scale(1) translateY(0);
         }
       }
+      
+/* Project Card Grid */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}

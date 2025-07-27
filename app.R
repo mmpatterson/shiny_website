@@ -1,26 +1,12 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-
 library(shiny)
 library(httr2)
 library(bslib)
 library(shiny)
 library(shinythemes)
 library(bsicons)
-library(scrollytell)
 library(leaflet)
 library(htmltools)
-library(nflfastR)
 library(dplyr)
-library(gt)
-library(gtExtras)
-library(DT)
 library(ggplot2)
 library(ggimage)
 library(glue)
@@ -28,350 +14,194 @@ library(thematic)
 
 thematic::thematic_shiny()
 
-# Move outside of app so action happens immediately
-# Perform NFL Data Calculations
-pbp <- calculate_stats(
-  seasons = nflreadr::most_recent_season(),
-  summary_level = c("season"),
-  stat_type = c("team"),
-  season_type = c("REG")
-) %>%
-  select(team, passing_yards, passing_yards_after_catch) %>%
-  mutate(passing_yards_before_catch = passing_yards - passing_yards_after_catch) %>%
-  inner_join(
-    teams_colors_logos %>%
-      select(team_abbr, team_wordmark, team_logo_espn),
-    by = c('team' = 'team_abbr')
-  )
-
 # Define UI for the application
 ui <- fluidPage(
-    
-  # theme = bs_theme(brand = TRUE),
-  # shinythemes::themeSelector(),
   tags$head(
     includeCSS("./www/styles.css")
   ),
+  # JS to fade in the main panel data
   tags$head(
     tags$script(HTML("
-    document.addEventListener('DOMContentLoaded', function () {
-      const container = document.getElementById('scrolly-section-holder');
-      const sections = container.querySelectorAll('.scrolly-section');
-      let current = 0;
-      let isScrolling = false;
-
-      function scrollToSection(index) {
-        if (index < 0 || index >= sections.length) return;
-        isScrolling = true;
-        sections[index].scrollIntoView({ behavior: 'smooth' });
-        current = index;
-        setTimeout(() => { isScrolling = false; }, 700); // delay to prevent rapid scrolling
-      }
-
-      container.addEventListener('wheel', function (e) {
-        if (isScrolling) return;
-        if (e.deltaY > 0) {
-          scrollToSection(current + 1); // scroll down
-        } else {
-          scrollToSection(current - 1); // scroll up
-        }
-        e.preventDefault(); // stop default scrolling
-      }, { passive: false });
-    });
-  "))
-  ),
-  tags$head(
-    # tags$style(HTML("
-    #   #fadeContainer {
-    #     opacity: 1;
-    #     transition: opacity 0.5s ease-in;
-    #   }
-    # ")),
-    tags$script(HTML("
-      Shiny.addCustomMessageHandler('fade', function(message) {
-        const container = document.getElementById('fadeContainer');
+      Shiny.addCustomMessageHandler('fadeMainContent', function(message) {
+        
+        const container = document.getElementById('fade');
         if (!container) return;
-      
+
         // Temporarily disable transition to instantly hide
         container.style.transition = 'none';
         container.style.opacity = 0;
-      
+
         // Force a reflow to apply the style immediately
         void container.offsetWidth; // trick to flush styles
-      
+
         // Re-enable transition and fade in
         container.style.transition = 'opacity 0.5s ease-in';
         container.style.opacity = 1;
       });
     "))
   ),
-  # Create a top bar with dropdowns
-  # page_navbar(
-  #   title = "Maxwell Patterson",
-  #   tabPanel("",icon = icon("home", lib = "glyphicon")
-  #   ),
-  #   tabPanel(title = tags$div(
-  #     onclick = "https://www.linkedin.com/in/maxwell-patterson/",
-  #     target = "_blank",
-  #     bsicons::bs_icon("linkedin", size = "2.5rem"),   # Adding a Bootstrap icon
-  #     # "External Link"
-  #   ),
-  #   value = "external_link"
-  #   ),
-  #   tabPanel(title = tags$div(
-  #     onclick = "https://github.com/mmpatterson",
-  #     target = "_blank",
-  #     bsicons::bs_icon("github", size = "2.5rem"),   # Adding a Bootstrap icon
-  #   ),
-  #   value = "external_link"
-  #   ),
-  # 
-  #   # Dropdown for Resume
-  #   tabPanel("Resume",
-  #            div(
-  #              style = "text-align: center;",  # Center the content
-  #              tags$iframe(
-  #                src = "data/maxwell_patterson.pdf",
-  #                width = "80%",              # Set width to 80%
-  #                height = "1000px",           # Set a fixed height
-  #                frameborder = "0"
-  #              )
-  #            )
-  #   ),
-  # 
-  #   # Dropdown for Projects
-  #   navbarMenu("Projects",
-  #              tabPanel("Deep Learning",
-  #                       h3("Wikiracer Object Detection"),
-  #                       p("This project was completed during my master's program. Our goal was to utilize an open source driving game, SuperTuxKart, to train a team of karts to detect a puck and score goals on the opposing team."),
-  #                       div(
-  #                         style = "text-align: center;",  # Center the content
-  #                         tags$iframe(
-  #                           src = "./data/object_detection_project.pdf",  # URL to your PDF using the resource path
-  #                           width = "80%",              # Set width to 80%
-  #                           height = "1000px",           # Set a fixed height
-  #                           frameborder = "0"
-  #                         )
-  #              )
-  #              ),
-  #              tabPanel(a(href = "https://mmpatterson.github.io/leaflet-earthquake-tracker/earthquake-tracker/", "Earthquake Tracker", target = "_blank")#,
-  #              )
-  #              # Add more projects as needed
-  #   )
-  # ),
-
-  scrolly_container("scr",
-                    scrolly_graph(
-                      div(id = "fadeContainer", uiOutput("dynamicOutput"))
-                    ),
-                    
-                    scrolly_sections(id = "scrolly-section-holder",
-                                     
-                      scrolly_section(id = "intro",
-                                      
-                                      p("Hello! My name is Max Patterson, and I am a data scientist in the Greater Boston area")
-                      ),
-                      scrolly_section(id = "data",
-                                      p("I have a passion for data and crafting insightful stories with it")
-                      ),
-                      scrolly_section(id = "locations",
-                                      p("I've been able to call 5 different cities my home")
-                      ),
-                      scrolly_section(id = "bills",
-                                      p("I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills fan. I also like the Buffalo Sabres, but it's hard rooting for such a downtrodden team")
-                      ),
-                      scrolly_section(id = "education",
-                                      p("I attended Dickinson College in Carlisle, PA, where I earned my bachelor's in physics and mathematics and participated on the cross country and track & field teams. I also have a master's in data science from the University of Texas at Austin")
-                      ),
-                      scrolly_section(id = "career-high-level",
-                                      p("I started out of undergrad as an IT consultant, and I kept getting drawn to the technical portions of my work. I decided to do a data science bootcamp, and I realized that a career in data science was what I was looking for.")
-                      ),
-                      scrolly_section(id = "data-science-specifics",
-                                      p(glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" ))
-                      ),
-                      scrolly_section(id = "final-scrolly",
-                                      p("Feel free to look at some of my projects and work history to get a better sense of my background")
+  # Left side panel
+  fluidRow(
+    column(
+      width = 3,
+      div(class = "sidebar",
+          tags$div(style = "text-align: center;",
+                   tags$img(src = "profile.jpeg", 
+                            style = "width: 15vh; height: 15vh; object-fit: cover;
+                        border-radius: 50%; border: 3px solid white; margin-bottom: 10px;"
+                            ),
+                   h3("Max Patterson", style = "color: var(--brand-cream); margin-bottom: 5px;"),
+                   tags$br(),
+                   
+                   # Social Icons
+                   tags$div(
+                     # LinkedIn icon
+                     tags$a(
+                       href = "https://www.linkedin.com/in/maxwell-patterson/",
+                       target = "_blank",
+                       bs_icon("linkedin", class = "icon-bounce linkedin-icon")
+                     ),
+                     # GitHub icon
+                     tags$a(
+                       href = "https://github.com/mmpatterson",
+                       target = "_blank",
+                       bs_icon("github", class = "icon-bounce github-icon")
+                     ),
+                     tags$a(
+                       href = "mailto:mmpatterson94@gmail.com?subject=Just%20saw%20your%20website", 
+                       bs_icon("envelope-arrow-up-fill", class = "icon-bounce email-icon")
                       )
-                )
+                   )
+          ),
+          tags$br(),
+          # Render the available navigation links
+          uiOutput("nav_links")  
+      )
+    ),
+    
+    column(
+      width = 9,
+      div(class = "main",
+          div(id = "fade", class = "fade-container",
+              uiOutput("main_content")
+          )
+      )
+    )
   ),
+  # Reference _brand.yml
   theme = bs_theme(brand = TRUE)
 )
 
 
-
-# Define server logic required to draw a histogram
 server <- function(input, output, session) {
   addResourcePath("data", "./data")
   
+  # Section Headings
+  current_section <- reactiveVal("About Me")
+  observeEvent(input$about, current_section("About Me"))
+  observeEvent(input$work, current_section("Work Experience"))
+  observeEvent(input$projects, current_section("Projects & Publications"))
+  observeEvent(input$resume, current_section("Resume"))
   
-  
-  pbp_data <- renderDT(as.data.frame(pbp %>% head(10)))
-  
-  team_table <- gt(pbp %>% select(team_wordmark, team_logo_espn, passing_yards, passing_yards_before_catch, passing_yards_after_catch)) %>%
-    cols_move(
-      columns = passing_yards_after_catch,
-      after = passing_yards_before_catch
-    ) %>%
-    gt_img_rows(columns = team_wordmark, height = 25) %>%
-    gt_img_rows(columns = team_logo_espn, img_source = "web", height = 30) %>%
-    cols_label(
-      passing_yards = "Passing Yards",
-      passing_yards_before_catch = "Passing Yards Before Catch",
-      passing_yards_after_catch = "Passing Yards After Catch",
-      team_wordmark = "",
-      team_logo_espn = ""
-    ) %>%
-    tab_options(
-      table.background.color = "#FAFAF7"
-    )
-  
-  med_before_catch <- median(pbp$passing_yards_before_catch)
-  med_after_catch <- median(pbp$passing_yards_after_catch)
-  
-  team_plot <- renderPlot(
-    pbp %>%
-    ggplot(aes(x = passing_yards_before_catch, y = passing_yards_after_catch)) + 
-    geom_image(aes(image = team_logo_espn)) +
-    geom_vline(xintercept = med_before_catch) +
-    geom_hline(yintercept = med_after_catch) +
-    labs(
-      title = "Passing Yards Before/After Catch"
-    ) +
-    xlab("Passing Yards Before Catch") +
-    ylab("Passing Yards After Catch") +
-    theme_minimal()
-  ) 
-  
-  timer <- reactiveTimer(3000)
-  options <- c("pbp_data", "team_table", "team_plot")
-  print(options)
-  counter <- reactiveVal(1)
-  
-  observe({
-    timer()
+  output$nav_links <- renderUI({
+    sections <- c("About Me" = "about", 
+                  "Projects & Publications" = "projects", "Resume" = "resume")
     
-    isolate({
-    new_val <- counter() %% length(options) + 1
-    counter(new_val)
-    })
-  
+    tagList(
+      lapply(names(sections), function(label) {
+        id <- sections[[label]]
+        class <- if (current_section() == label) "nav-link active" else "nav-link"
+        actionLink(inputId = id, label = label, class = class)
+      })
+    )
   })
   
-  output$dynamicOutput <- renderUI({
-    if(input$scr == "data"){
-      val <- options[counter()]
-      session$sendCustomMessage("fade", list())
-      if(val == "pbp_data"){
-        pbp_data
-      }
-      else if(val == "team_table") {
-        render_gt(team_table)
-      }
-      else if(val == "team_plot"){
-        tags$div(id = "shiny-plot-output", team_plot)
-      }
-        
-    }
-    else if(input$scr == "locations"){
-      leafletOutput("cityMap", height = "60vh", width = "60vw")
-    }
-
-    else if (input$scr == "bills"){
-      imageOutput("bills")
-    }
-    else if (input$scr == "final-scrolly" | input$scr == "intro"){
-      div(class = "full-page-center",
-          div(class = "icon-grid",
-              style = "display: flex;
-                      flex-direction: row;
-                      justify-content: center;
-                      align-items: center;
-                      gap: 40px;
-                      margin-top: 40px;",
-          # LinkedIn icon
-          tags$a(
-            href = "https://www.linkedin.com/in/maxwell-patterson/",
-            target = "_blank",
-            class = "icon-bounce linkedin-icon",
-            bs_icon("linkedin")
-          ),
-          # GitHub icon
-          tags$a(
-            href = "https://github.com/mmpatterson",
-            target = "_blank",
-            class = "icon-bounce github-icon",
-            bs_icon("github")
-          ),
-          # Resume icon
-          tags$div(
-            style = "text-align: center;",
-            class = "icon-bounce",
-            tags$a(
-              href = "data/maxwell_patterson.pdf",
-              download = NA, 
-              class = "icon-bounce resume-icon",
-              bs_icon("file-earmark-person"),
-              title = "Resume"
-            ),
-            tags$div("Resume", style = "margin-top: 5px; font-size: 0.3em;")
-          ),
-          # Fancy dropdown
-          tags$div(
-            class = "custom-dropdown",
-            style = "position: relative; display: inline-block; font-size: 1.2rem;",
-            tags$button(
-              class = "dropdown-button",
-              "Projects ▾"
-            ),
-            tags$div(
-              class = "dropdown-content",
-              style = "
-          display: none;
-          position: absolute;
-          background-color: #f9f9f9;
-          min-width: 200px;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          z-index: 1;
-        ",
-              tags$a(href = "https://your-app1.shinyapps.io", target = "_blank", "📈 Forecasting App"),
-              tags$a(href = "https://your-app2.shinyapps.io", target = "_blank", "🧠 NLP Classifier"),
-              tags$a(href = "https://your-app3.shinyapps.io", target = "_blank", "📊 Dashboard")
-            )
-          ),
-          
-          tags$script(HTML("
-      document.querySelectorAll('.custom-dropdown').forEach(function(dropdown) {
-        var button = dropdown.querySelector('.dropdown-button');
-        var content = dropdown.querySelector('.dropdown-content');
-        button.addEventListener('click', function() {
-          content.style.display = content.style.display === 'block' ? 'none' : 'block';
-        });
-        window.addEventListener('click', function(e) {
-          if (!dropdown.contains(e.target)) {
-            content.style.display = 'none';
-          }
-        });
-      });
-    "))
-      )
-          )
-      
-    }
-    else{
-      
-    }
+  # Display data on main section based on current section selected
+  output$main_content <- renderUI({
+    # Send JS message indicating new content on main panel
+    session$sendCustomMessage("fadeMainContent", list())
+    
+    switch(current_section(),
+           "About Me" = tagList(
+             # Main Container
+             div(
+               style = "display: flex; height: 600px; gap: 30px;",
+               # Left Side
+               div(
+                 style = "width: 40%; display: flex; flex-direction: column; justify-content: space-between; padding-right: 20px;",
+                 h3("About Me"),
+                 p("My name is Max Patterson, and I'm a data scientist living in the Greater Boston area."),
+                 p("I have a passion for data and crafting insightful stories with it"),
+                 p("I've been able to call 5 different cities my home"),
+                 p("I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills fan. I'm also a Buffalo Sabres fan, but it's tough to be a fan right now"),
+                 p("I attended Dickinson College in Carlisle, PA, where I earned my bachelor's in physics and mathematics and participated on the cross country and track & field teams. I also have a master's in data science from the University of Texas at Austin"),
+                 p(glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" )),
+                 p("Feel free to look at some of my projects and work history to get a better sense of my background")
+               ),
+               # Right Side
+               div(
+                 style = "width: 60%; display: flex; gap: 20px; flex-wrap: wrap;",
+                 
+                   div(style = "flex: 1 1 50%; min-width: 250px;", leafletOutput("cityMap")),
+                   tags$br(),
+                   div(style = "flex: 1 1 40%; min-width: 250px;", imageOutput("skiing")),
+                   div(style = "flex: 1 1 40%; min-width: 250px;", imageOutput("goose")),
+                   div(style = "flex: 1 1 50%; min-width: 250px;", imageOutput("bills")),
+                   
+               )
+               
+             ),
+             
+           ),
+           "Projects & Publications" = tagList(
+             h3("Projects & Publications"),
+             # Cards for each project
+             div(class = "project-grid",
+                 card(
+                   full_screen = FALSE,
+                   card_header("Multi-omic signatures of host response associated with presence, type, and outcome of enterococcal bacteremia"),
+                   card_body("I was an author of a paper published in the mSystems journal, a publication operated by the American Society for Microbiology. To help the primary author validate a difference in the data samples between two distinct groups of patients, I constructed a logistic regression model that nearly perfectly predicted the two groups in the test set. Utilized R to create the model."),
+                   card_footer(
+                     tags$a(href = "https://journals.asm.org/doi/10.1128/msystems.01471-24", target = "_blank", "View Paper")
+                   )
+                 ),
+                 card(
+                   full_screen = FALSE,
+                   card_header("Computer Vision Paper"),
+                   card_body("An object detection paper I wrote during my Deep Learning course while earning my master's at the University of Texas. The paper was written as part of our final project, where my three groupmates and I had to construct a guidance system for a 2v2 video game ice hockey team. As part of the project, we trained a Convolutional Neural Network to detect objects in the game, and we would use this information to direct our team players to the right location. We used pyTorch to develop the object detection model"),
+                   card_footer(
+                     tags$a(href = "data/object_detection_project.pdf", target = "_blank", "View Paper")
+                   )
+                 ),
+                 card(
+                   full_screen = FALSE,
+                   card_header("Workflows with Posit Team"),
+                   card_body("As a data scientist at Suffolk Construction, I partnered with Posit (formerly RStudio) to present about Suffolk's predictive safety model, which aims to assess project risk."),
+                   card_footer(
+                     tags$a(href = "https://youtu.be/yavHEWpgrCQ?si=MQ_OMf8dLCf1rdM9", target = "_blank", "View Presentation")
+                   )
+                 ),
+                 card(
+                   full_screen = FALSE,
+                   card_header("Worldwide Earthquake Tracker"),
+                   card_body("A simple app to track earthquakes around the world over the past 7 days. Built using javascript."),
+                   card_footer(
+                     tags$a(href = "https://mmpatterson.github.io/leaflet-earthquake-tracker/earthquake-tracker/", target = "_blank", "View Project")
+                   )
+                 )
+             )
+           ),
+           "Resume" = tagList(
+             h3("Resume"),
+             tags$p("Download my resume or preview it below."),
+             tags$br(), tags$br(),
+             tags$iframe(
+               src = "data/maxwell_patterson.pdf",
+               style = "width: 100%; height: 80vh; border: none;"
+             )
+           )
+    )
   })
-  
-  # output$dynamicOutput <- renderUI({
-  #   req(input$scr)
-  #   switch(input$scr,
-  #          "intro" = h2("Intro Panel: Overview of Max"),
-  #          "pink" = h2("Pink Panel: Data Passion"),
-  #          "locations" = h2("Locations Panel: Where I've Lived"),
-  #          "bills" = h2("Bills Panel: Sports Fandom")
-  #   )
-  # })
-  
   
   # Locations Map
   cities <- data.frame(
@@ -381,9 +211,10 @@ server <- function(input, output, session) {
     stringsAsFactors = FALSE
   )
   
+  # Render map based on cities
   output$cityMap <- renderLeaflet({
     leaflet(data = cities) %>%
-      addProviderTiles("Stadia.AlidadeSmooth") %>%
+      addTiles() %>%
       setView(lng = mean(cities$lng), lat = mean(cities$lat), zoom = 5) %>%
       addMarkers(~lng, ~lat, popup = ~name)
   })
@@ -395,19 +226,32 @@ server <- function(input, output, session) {
       contentType = 'image/jpeg',
       width = "60%",
       height = "70%",
-      alt = "Me at a Bills game"
+      alt = "A picture of my wife and me at a Bills game"
     )
   }, deleteFile = FALSE)
   
-  output$scr <- renderScrollytell({scrollytell()})
-  output$section <- renderText(paste0("Section: ", input$scr))
+  # Goose Image
+  output$goose <- renderImage({
+    list(
+      src = './www/goose.jpeg',
+      contentType = 'image/jpeg',
+      width = "60%",
+      height = "70%",
+      alt = "My dog, Goose"
+    )
+  }, deleteFile = FALSE)
   
-  observe({cat("section:", input$scr, "\n")})
+  # Skiing Image
+  output$skiing <- renderImage({
+    list(
+      src = './www/skiing.jpeg',
+      contentType = 'image/jpeg',
+      width = "60%",
+      height = "70%",
+      alt = "A picture of my wife, Katy, and me skiing in Vermont"
+    )
+  }, deleteFile = FALSE)
   
-  observeEvent(input$scr, {
-    session$sendCustomMessage("fade", list())
-  })
-
 }
 
 # Run the application
