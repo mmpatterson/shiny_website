@@ -8,8 +8,8 @@
   background-color: var(--brand-navy);
   color: var(--brand-cream);
   /*padding: 20px; */
-  height: 100vh;
   min-height: 100vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -20,11 +20,14 @@
 
 /* Make the Bootstrap column and row stretch too */
 .row {
+  display: flex;
   min-height: 100vh;
 }
 
 .col-sm-3 {  /* width=3 maps to col-sm-3 in Bootstrap */
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar .shiny-input-container label {
