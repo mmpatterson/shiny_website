@@ -8,8 +8,9 @@
   background-color: var(--brand-navy);
   color: var(--brand-cream);
   /*padding: 20px; */
-  min-height: 100vh;
-  flex: 1;
+  position: sticky;
+  top: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,17 +18,15 @@
   text-align: center;
 }
 
-
 /* Make the Bootstrap column and row stretch too */
 .row {
-  display: flex;
   min-height: 100vh;
 }
 
+/* Give the column the same navy background so it fills full page height */
 .col-sm-3 {  /* width=3 maps to col-sm-3 in Bootstrap */
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+  padding: 0 !important;
+  background-color: var(--brand-navy);
 }
 
 .sidebar .shiny-input-container label {
