@@ -44,24 +44,22 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 3,
+      style = "padding: 0; min-height: 100vh;",
       div(class = "sidebar",
+          style = "min-height: 100vh;",
           tags$div(style = "text-align: center;",
                    tags$img(src = "profile.jpeg", 
                             style = "width: 15vh; height: 15vh; object-fit: cover;
-                        border-radius: 50%; border: 3px solid white; margin-bottom: 10px;"
-                            ),
+                    border-radius: 50%; border: 3px solid white; margin-bottom: 10px;"
+                   ),
                    h3("Max Patterson", style = "color: var(--brand-cream); margin-bottom: 5px;"),
                    tags$br(),
-                   
-                   # Social Icons
                    tags$div(
-                     # LinkedIn icon
                      tags$a(
                        href = "https://www.linkedin.com/in/maxwell-patterson/",
                        target = "_blank",
                        bs_icon("linkedin", class = "icon-bounce linkedin-icon")
                      ),
-                     # GitHub icon
                      tags$a(
                        href = "https://github.com/mmpatterson",
                        target = "_blank",
@@ -70,13 +68,12 @@ ui <- fluidPage(
                      tags$a(
                        href = "mailto:mmpatterson94@gmail.com?subject=Just%20saw%20your%20website", 
                        bs_icon("envelope-arrow-up-fill", class = "icon-bounce email-icon")
-                      )
+                     )
                    )
           ),
           tags$br(),
-          # Render the available navigation links
-          uiOutput("nav_links")  
-      )
+          uiOutput("nav_links")   # <-- now inside the sidebar div
+      )                           # <-- closes div(class = "sidebar", ...)
     ),
     
     column(
@@ -143,8 +140,8 @@ server <- function(input, output, session) {
                  style = "width: 60%; display: flex; gap: 20px; flex-wrap: wrap;",
                  
                    div(style = "flex: 1 1 50%; min-width: 250px;", leafletOutput("cityMap")),
-                   tags$br(),
                    div(style = "flex: 1 1 40%; min-width: 250px;", imageOutput("skiing")),
+                   div(style = "flex: 1 1 50%; min-width: 250px;", imageOutput("sabres")),
                    div(style = "flex: 1 1 40%; min-width: 250px;", imageOutput("goose")),
                    div(style = "flex: 1 1 50%; min-width: 250px;", imageOutput("bills")),
                    
@@ -238,6 +235,16 @@ server <- function(input, output, session) {
       width = "60%",
       height = "70%",
       alt = "My dog, Goose"
+    )
+  }, deleteFile = FALSE)
+  
+  output$sabres <- renderImage({
+    list(
+      src = './www/sabres_game.jpeg',
+      contentType = 'image/jpeg',
+      width = "60%",
+      height = "70%",
+      alt = "A picture of my wife and me at a Sabres game"
     )
   }, deleteFile = FALSE)
   
