@@ -133,7 +133,7 @@ server <- function(input, output, session) {
                  p("My name is Max Patterson, and I'm a data scientist living in the Greater Boston area."),
                  p("I have a passion for data and crafting insightful stories with it"),
                  p("I've been able to call 5 different cities my home"),
-                 p("I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills fan. I'm also a Buffalo Sabres fan, but it's tough to be a fan right now"),
+                 p("I was born and raised in Buffalo, NY. I am a diehard Buffalo Bills and Buffalo Sabres fan."),
                  p("I attended Dickinson College in Carlisle, PA, where I earned my bachelor's in physics and mathematics and participated on the cross country and track & field teams. I also have a master's in data science from the University of Texas at Austin"),
                  p(glue::glue("I have ", as.numeric(format(Sys.Date(), "%Y")) - 2016, " years of experience in SQL and ", as.numeric(format(Sys.Date(), "%Y")) - 2019, " years of experience in python and R" )),
                  p("Feel free to look at some of my projects and work history to get a better sense of my background")
