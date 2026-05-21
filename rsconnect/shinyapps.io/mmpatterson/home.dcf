@@ -5,8 +5,6 @@ account: mmpatterson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 15126341
-bundleId: 10934401
+bundleId: 12024350
 url: https://mmpatterson.shinyapps.io/home/
 version: 1
-asMultiple: FALSE
-asStatic: FALSE

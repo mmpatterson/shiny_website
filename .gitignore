@@ -1,4 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+.RData.bak
 .Ruserdata
+.DS_Store
+**/.DS_Store
