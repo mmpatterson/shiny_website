@@ -1,12 +1,12 @@
-name: home
-title: home
+name: shiny_website
+title: shiny_website
 username: mmpatterson
 account: mmpatterson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 15126341
-bundleId: 12112366
-url: https://mmpatterson.shinyapps.io/home/
+appId: 17495257
+bundleId:
+url: https://mmpatterson.shinyapps.io/shiny_website/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
